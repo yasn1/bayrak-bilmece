@@ -1,0 +1,299 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Bayrak Bilmece</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #start-box {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    #start-box input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    #start-box button {
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      background: #3498db;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    #start-box button:hover {
+      background: #2980b9;
+    }
+
+    #game-container {
+      width: 90vw;
+      max-width: 600px;
+    }
+
+    .bar-wrap {
+      background: #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    .bar {
+      height: 12px;
+      background: #2ecc71;
+      width: 100%;
+      transition: width 0.2s;
+    }
+
+    #flag-box {
+      text-align: center;
+      margin: 1rem 0;
+    }
+
+    #flag-box img {
+      max-width: 100%;
+      height: auto;
+      border: 4px solid #ccc;
+      border-radius: 8px;
+    }
+
+    #choices {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .choice-btn {
+      padding: 0.75rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #fff;
+      transition: transform 0.2s, background 0.3s;
+    }
+
+    .choice-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-red {
+      background: #e74c3c;
+    }
+
+    .btn-blue {
+      background: #3498db;
+    }
+
+    .btn-green {
+      background: #2ecc71;
+    }
+
+    .btn-orange {
+      background: #e67e22;
+    }
+
+    .btn-purple {
+      background: #9b59b6;
+    }
+
+    .btn-secondary {
+      background: #6c757d !important;
+      color: #fff;
+    }
+
+    .correct {
+      background: #27ae60 !important;
+    }
+
+    .incorrect {
+      background: #c0392b !important;
+    }
+
+    #next-btn {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 6px;
+      background: #8e44ad;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      opacity: 0.5;
+      margin-bottom: 1rem;
+    }
+
+    #next-btn:enabled {
+      opacity: 1;
+    }
+    #score-board {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      margin: auto;
+    }
+    #score-board h3 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    #score-board p {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .leaderboard-list {
+      width: 100%;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .leaderboard-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      background: #f4f6f8;
+      transition: background 0.3s;
+      font-size: 1rem;
+    }
+
+    .leaderboard-list li:hover {
+      background: #e2e6ea;
+    }
+    .leaderboard-list li .rank {
+      display: inline-block;
+      width: 2rem;
+      text-align: center;
+      font-weight: bold;
+      margin-right: 1rem;
+    }
+    .leaderboard-list li.rank-1 {
+      background: linear-gradient(45deg, #FFD700, #FFC700);
+      color: #fff;
+    }
+
+    .leaderboard-list li.rank-2 {
+      background: linear-gradient(45deg, #C0C0C0, #A9A9A9);
+      color: #fff;
+    }
+
+    .leaderboard-list li.rank-3 {
+      background: linear-gradient(45deg, #CD7F32, #B5671A);
+      color: #fff;
+    }
+    .leaderboard-list li.rank-4,
+    .leaderboard-list li.rank-5,
+    .leaderboard-list li.rank-6,
+    .leaderboard-list li.rank-7,
+    .leaderboard-list li.rank-8,
+    .leaderboard-list li.rank-9,
+    .leaderboard-list li.rank-10 {
+      background: #f4f6f8;
+      color: #333;
+    }
+    .leaderboard-list li .name {
+      flex: 1;
+      text-align: left;
+    }
+
+    .leaderboard-list li .score {
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="overlay">
+    <div id="start-box">
+      <h2>Oyuna Hoşgeldin!</h2>
+      <input id="username-input" placeholder="Kullanıcı adını gir" />
+      <button id="start-btn">Başla</button>
+    </div>
+  </div>
+
+  <div id="game-container" style="display:none;">
+    <div>Genel Süre:</div>
+    <div class="bar-wrap">
+      <div id="total-bar" class="bar"></div>
+    </div>
+    <div>Soru Süresi:</div>
+    <div class="bar-wrap">
+      <div id="question-bar" class="bar"></div>
+    </div>
+
+    <div id="flag-box">
+      <img id="flag-img" src="" alt="Bayrak">
+    </div>
+
+    <div id="choices"></div>
+
+    <button id="next-btn" disabled>Sonraki</button>
+
+    <div id="score-board" style="display:none;">
+      <h3>Oyun Bitti!</h3>
+      <p>Puanın: <span id="final-score"></span></p>
+      <div id="leaderboard">
+        <h4>En İyi 10</h4>
+        <ul id="board-list" class="leaderboard-list"></ul>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+  </script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js">
+  </script>
+  <script src="/script.js"></script>
+</body>
+
+</html>
