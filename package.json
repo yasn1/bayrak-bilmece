@@ -1,17 +1,18 @@
 {
-  "name": "game",
+  "name": "bayrak-bilmece",
   "version": "1.0.0",
   "description": "",
-  "main": "game.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "keywords": [],
+  "keywords": ["bayrak bilmece","oyun"],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "colors": "^1.4.0",
+    "express": "^5.1.0",
     "oxzof-nosql": "^1.0.2",
     "path": "^0.12.7",
     "socket.io": "^4.8.1"
