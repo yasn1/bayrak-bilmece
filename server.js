@@ -63,7 +63,7 @@ io.on('connection', socket => {
     const session = sessions.get(socket.id);
     if (!session) return;
 
-    const qData = game.new();
+    const qData = game.new(session.h);
     const options = [...qData.choices, qData.country]
       .sort(() => Math.random() - 0.5);
     const correctIdx = options.findIndex(o => o.code === qData.country.code);
@@ -91,8 +91,10 @@ io.on('connection', socket => {
 
     const elapsedQ = Date.now() - session.currentQuestion.sentAt;
     const isCorrect = choiceId === session.currentQuestion.correctIdx;
-    if (!session.h.includes(choiceId)){
-      session.h.push(choiceId)
+    
+    let d = session.currentQuestion.options[session.currentQuestion.correctIdx].code;
+    if (!session.h.includes(d)) {
+      session.h.push(d)
       if (isCorrect) {
         session.score += 1;
       } else {
@@ -102,39 +104,38 @@ io.on('connection', socket => {
 
 
 
-
-  socket.emit('answerResult', {
-    correct: isCorrect,
-    correctChoice: session.currentQuestion.correctIdx,
-    choiceId,
-    score: session.score
-  });
-});
-
-async function endGame() {
-  const session = sessions.get(socket.id);
-  if (!session) return;
-
-  const board = Array.from(sessions.values())
-    .map(s => ({ name: s.username, score: s.score }))
-  await db.insertOne('users', { name: board[0].name, score: board[0].score });
-  const leaderboard = await db.find('users').then(data => {
-    return data.sort((a, b) => b.score - a.score).slice(0, 10);
+    socket.emit('answerResult', {
+      correct: isCorrect,
+      correctChoice: session.currentQuestion.correctIdx,
+      choiceId,
+      score: session.score
+    });
   });
 
-  socket.emit('gameOver', {
-    score: session.score,
-    leaderboard
+  async function endGame() {
+    const session = sessions.get(socket.id);
+    if (!session) return;
+
+    const board = Array.from(sessions.values())
+      .map(s => ({ name: s.username, score: s.score }))
+    await db.insertOne('users', { name: board[0].name, score: board[0].score });
+    const leaderboard = await db.find('users').then(data => {
+      return data.sort((a, b) => b.score - a.score).slice(0, 10);
+    });
+
+    socket.emit('gameOver', {
+      score: session.score,
+      leaderboard
+    });
+
+    sessions.delete(socket.id);
+    clearTimeout(gameTimer);
+  }
+
+  socket.on('disconnect', () => {
+    clearTimeout(gameTimer);
+    sessions.delete(socket.id);
   });
-
-  sessions.delete(socket.id);
-  clearTimeout(gameTimer);
-}
-
-socket.on('disconnect', () => {
-  clearTimeout(gameTimer);
-  sessions.delete(socket.id);
-});
 });
 
 server.listen(port, () =>
