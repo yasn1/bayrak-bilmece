@@ -3,7 +3,7 @@ const fs = require('fs');
 class Game{
     constructor(){}
     new(){
-        const data = JSON.parse(fs.readFileSync("./data.json", "utf-8"));
+        const data = JSON.parse(fs.readFileSync("./world-data.json", "utf-8"));
         const obj = {}
         obj.country = data[Math.floor(Math.random()*(data.length-1))]
         obj.country.flag = `https://raw.githubusercontent.com/hampusborgos/country-flags/refs/heads/main/svg/${obj.country["code"].toLowerCase()}.svg`

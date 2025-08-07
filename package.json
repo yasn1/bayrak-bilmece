@@ -7,11 +7,15 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "keywords": ["bayrak bilmece","oyun"],
+  "keywords": [
+    "bayrak bilmece",
+    "oyun"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "colors": "^1.4.0",
+    "csv-parser": "^3.2.0",
     "express": "^5.1.0",
     "oxzof-nosql": "^1.0.2",
     "path": "^0.12.7",
